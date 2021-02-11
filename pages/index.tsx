@@ -1,5 +1,7 @@
 import Head from 'next/head'
+import React from 'react'
 import styles from '../styles/Home.module.css'
+import Link from 'next/link';
 
 export default function Home() {
   return (
@@ -20,33 +22,19 @@ export default function Home() {
         </p>
 
         <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
+          <Link href="/puzzle">
+            <a className={styles.card}>
+              <h3>Puzzle &rarr;</h3>
+              <p>Turn the golden screw</p>
+            </a>
+          </Link>
 
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
+          <Link href="/player/nitzel">
+            <a className={styles.card}>
+              <h3>Played games &rarr;</h3>
+              <p>All the history</p>
+            </a>
+          </Link>
         </div>
       </main>
 
