@@ -1,8 +1,8 @@
-import Head from 'next/head';
-import styles from '../../styles/Home.module.css';
+import Head from 'next/head'
+import styles from '../../../styles/Home.module.css'
 import useSWR from 'swr';
-import fetcher from '../../helpers/ui/fetcher';
-import { Result } from '../api/puzzle/random/[boardSize]';
+import fetcher from '../../../helpers/ui/fetcher';
+import { Result } from '../../api/puzzle/[boardSize]/[puzzleId]';
 import { useRouter } from 'next/router';
 
 const getValidBoardSize = (boardSize: string | undefined): number | null => {
@@ -15,10 +15,11 @@ const getValidBoardSize = (boardSize: string | undefined): number | null => {
   return null;
 }
 
-function RandomPuzzle() {
+function Puzzle() {
   const router = useRouter();
   const boardSize = getValidBoardSize(router.query.boardSize as string);
-  const { data, error } = useSWR<Result>(boardSize ? `/api/puzzle/random/${boardSize}` : null, fetcher);
+  const puzzleId = parseInt(router.query.puzzleId as string, 10);
+  const { data, error } = useSWR<Result>(boardSize && puzzleId != null ? `/api/puzzle/${boardSize}/${puzzleId}` : null, fetcher);
   if (error) return <div>failed to load</div>
   if (!data) return <div>loading...</div>
 
@@ -59,4 +60,4 @@ function RandomPuzzle() {
   );
 }
 
-export default RandomPuzzle;
+export default Puzzle;
