@@ -1,14 +1,26 @@
-
-import { GetServerSideProps, GetStaticProps, InferGetStaticPropsType } from 'next';
 import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import styles from '../../styles/Home.module.css'
 import useSWR from 'swr';
-import fetcher from '../helpers/ui/fetcher';
-import { Result } from './api/puzzle/random';
+import fetcher from '../../helpers/ui/fetcher';
+import { Result } from '../api/puzzle/random/[boardsize]';
+import { useRouter } from 'next/router';
 
+const getValidBoardSize = (boardSize: string | undefined): number | null => {
+  console.log(boardSize);
+  if (!boardSize) return null;
+
+  const size = parseInt(boardSize, 10);
+  if (size >= 3 && size <= 9) {
+    return size;
+  }
+  return null;
+}
 
 function Puzzle() {
-  const { data, error } = useSWR<Result>('/api/puzzle/random', fetcher);
+  const router = useRouter();
+  const boardSize = getValidBoardSize(router.query.boardSize as string);
+  console.log(boardSize);
+  const { data, error } = useSWR<Result>(boardSize ? `/api/puzzle/random/${boardSize}` : null, fetcher);
   if (error) return <div>failed to load</div>
   if (!data) return <div>loading...</div>
 
@@ -22,18 +34,9 @@ function Puzzle() {
 
       <main className={styles.main}>
         <h1 className={styles.title}>
-          Puzzle
+          {boardSize}x{boardSize} Puzzle
         </h1>
-        <p className={styles.description}>
-          Better solve it quick.
-        </p>
-
         <div className={styles.grid} style={{ flexDirection: 'column' }}>
-          {/* <a href="https://ptn.ninja" className={styles.card}>
-            <h3>PTN.Ninja &rarr;</h3>
-            <p>The foundation enabling you to puzzle.</p>
-          </a> */}
-
           <a href={puzzleUrl} className={styles.card}>
             <p>
               <iframe

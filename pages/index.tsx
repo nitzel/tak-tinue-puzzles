@@ -13,7 +13,7 @@ export default function Home() {
 
       <main className={styles.main}>
         <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
+          Tak Puzzles
         </h1>
 
         <p className={styles.description}>
@@ -22,10 +22,24 @@ export default function Home() {
         </p>
 
         <div className={styles.grid}>
-          <Link href="/puzzle">
+          <Link href="/puzzle/4">
             <a className={styles.card}>
-              <h3>Puzzle &rarr;</h3>
-              <p>Turn the golden screw</p>
+              <h3>4x4 Road Puzzles</h3>
+            </a>
+          </Link>
+          <Link href="/puzzle/5">
+            <a className={styles.card}>
+              <h3>5x5 Road Puzzles</h3>
+            </a>
+          </Link>
+          <Link href="/puzzle/6">
+            <a className={styles.card}>
+              <h3>6x6 Road Puzzles</h3>
+            </a>
+          </Link>
+          <Link href="/puzzle/7">
+            <a className={styles.card}>
+              <h3>7x7 Road Puzzles</h3>
             </a>
           </Link>
 
