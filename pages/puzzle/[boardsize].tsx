@@ -6,7 +6,6 @@ import { Result } from '../api/puzzle/random/[boardsize]';
 import { useRouter } from 'next/router';
 
 const getValidBoardSize = (boardSize: string | undefined): number | null => {
-  console.log(boardSize);
   if (!boardSize) return null;
 
   const size = parseInt(boardSize, 10);
@@ -19,7 +18,6 @@ const getValidBoardSize = (boardSize: string | undefined): number | null => {
 function Puzzle() {
   const router = useRouter();
   const boardSize = getValidBoardSize(router.query.boardSize as string);
-  console.log(boardSize);
   const { data, error } = useSWR<Result>(boardSize ? `/api/puzzle/random/${boardSize}` : null, fetcher);
   if (error) return <div>failed to load</div>
   if (!data) return <div>loading...</div>
@@ -29,7 +27,7 @@ function Puzzle() {
     <div className={styles.container}>
       <Head>
         <title>Tak Puzzle</title>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon.png" />
       </Head>
 
       <main className={styles.main}>
@@ -44,7 +42,7 @@ function Puzzle() {
                 width="100%"
                 height="100%"
                 style={{
-                  width: "600px", // "100%",
+                  width: "600px",
                   maxWidth: "100%",
                   height: "600px",
                   maxHeight: "100vh",
