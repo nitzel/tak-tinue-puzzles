@@ -14,8 +14,29 @@ export type Result = {
 
 const firstValidGameDate = 1461430858755;
 
+const ptnTimeString = (game: IGame) => {
+  const minutes = Math.floor(game.timertime / 60);
+  const seconds = game.timertime % 60;
+  const incrementSeconds = game.timerinc;
+  return `${minutes}:${seconds} +${incrementSeconds}`;
+}
+
 const createPtn = (game: IGame, moves: string[]) => {
-  return `[Player1 "${game.player_white}"][Player2 "${game.player_black}"][Size "${game.size}"][Komi "${game.komi}"] ${moves.join(' ')} `;
+  const config = {
+    Player1: game.player_white,
+    Player2: game.player_black,
+    Size: game.size,
+    Komi: game.komi,
+    Rating1: game.rating_white,
+    Rating2: game.rating_black,
+    Clock: ptnTimeString(game),
+    Event: "Online Play",
+    Site: "PlayTak.com",
+    Result: game.result,
+  }
+
+  const configString = Object.entries(config).map(([key, value]) => `[${key} "${value}"]`).join('');
+  return configString + " " + moves.join(' ');
 }
 
 export default async (req: NextApiRequest, res: NextApiResponse<Result>) => {
