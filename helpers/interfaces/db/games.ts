@@ -9,7 +9,7 @@ export enum GameResult {
 }
 
 type ServerNotation = string
-export default interface IGame {
+export interface IGame {
   id: number
   date: number
   size: number
