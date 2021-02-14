@@ -6,6 +6,7 @@ import { Result } from './api/puzzle';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { HowItWorks } from '../components/howItWorks';
+import Link from 'next/link'
 
 const getValidBoardSize = (boardSize?: string): number | null => {
   if (!boardSize) return null;
@@ -33,7 +34,7 @@ const savePuzzleAsCompleted = (boardSize: number, puzzleId: number) => {
   localStorage.setItem(getLocalStorageKeyForPlayedPuzzles(boardSize), JSON.stringify(playedGames));
 }
 
-const getNextUnplayedPuzzle = (boardSize: number, currentPuzzleId: number): number | null => {
+const getNextUnplayedPuzzle = (boardSize: number, currentPuzzleId?: number): number | null => {
   if (!boardSize) return null;
 
   const key = getLocalStorageKeyForPlayedPuzzles(boardSize);
@@ -41,6 +42,7 @@ const getNextUnplayedPuzzle = (boardSize: number, currentPuzzleId: number): numb
   const playedGames: number[] = playedGamesString ? JSON.parse(playedGamesString) : [];
 
   const lastPlayedGameId = Math.max(currentPuzzleId ?? 0, 0);
+  console.log({ lastPlayedGameId });
   let previousId: number = lastPlayedGameId;
   playedGames.forEach(playedGameId => {
     if (playedGameId - previousId > 1) {
@@ -74,7 +76,7 @@ function Puzzle() {
   const goToNextPuzzle = () => {
     if (!boardSize) return;
     savePuzzleAsCompleted(boardSize, puzzleId);
-    const nextId = getNextUnplayedPuzzle(boardSize, puzzleId);
+    const nextId = getNextUnplayedPuzzle(boardSize, Number.isNaN(puzzleId) ? undefined : puzzleId);
     if (!nextId) {
       throw new Error(`Failed to get the next puzzle ID (BoardSize=${boardSize} CurrentPuzzleID=${puzzleId})`);
     }
@@ -100,9 +102,8 @@ function Puzzle() {
   });
 
   const { data, error } = useSWR<Result>(boardSize && puzzleId ? `/api/puzzle?boardSize=${boardSize}&puzzleId=${puzzleId}` : null, fetcher);
-  if (error) return <div>failed to load</div>
-  if (!data) return <div>loading...</div>
-  const { puzzleUrl } = data;
+
+  const { puzzleUrl } = data ?? {};
 
   return (
     <div className={styles.container}>
@@ -112,27 +113,32 @@ function Puzzle() {
       </Head>
 
       <main className={styles.main}>
+        <Link href="/"><a className={styles.link}>&larr; Home</a></Link>
         <Title boardSize={boardSize} />
         <HowItWorks movesToWin={1} type="road" className={styles.description_normal} />
         <div className={styles.grid} style={{ flexDirection: 'column' }}>
-          <a href={puzzleUrl} className={styles.card}>
-            <p>
-              <iframe
+          {
+            puzzleUrl
+              ? <iframe
+                className={styles.puzzle_iframe}
                 src={puzzleUrl}
                 width="100%"
                 height="100%"
-                style={{
-                  width: "600px",
-                  maxWidth: "100%",
-                  height: "600px",
-                  maxHeight: "100vh",
-                }}
                 frameBorder="0"
                 allowFullScreen={true}
-              >
-              </iframe>
-            </p>
-          </a>
+              ></iframe>
+              : <div className={styles.puzzle_iframe}>
+                {
+                  error
+                    ? <div style={{ color: "red" }}>
+                      An error has appeared while loading the puzzle {boardSize}#{puzzleId}:
+                      <br />
+                      <code>{error}</code>
+                    </div>
+                    : <span>Loading the next puzzle...</span>
+                }
+              </div>
+          }
         </div>
         <button className={styles.btn_positive} onClick={goToNextPuzzle}>Next Puzzle</button>
       </main>
