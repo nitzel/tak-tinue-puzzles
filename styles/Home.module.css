@@ -8,7 +8,6 @@
 }
 
 .main {
-  padding: 5rem 0;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -60,6 +59,19 @@
 .description {
   line-height: 1.5;
   font-size: 1.5rem;
+}
+
+.title_normal {
+  composes: title;
+  font-size: revert;
+}
+
+.description_normal {
+  composes: description;
+  font-size: revert;
+  text-align: left;
+  width: 60%;
+  font-style: italic;
 }
 
 .code {
@@ -119,4 +131,24 @@
     width: 100%;
     flex-direction: column;
   }
+}
+
+.btn {
+  padding: 0.5rem;
+  border-radius: 5px;
+  transition: background-color 0.5s ease, background-color 0.5s ease;
+  cursor: pointer;
+  background: none;
+  border: 1px solid #aaa;
+}
+.btn:hover {
+  background: #ccc;
+}
+
+.btn_positive {
+  composes: btn;
+  border-color: 1px solid #8bc34a;
+}
+.btn_positive:hover {
+  background: #8bc34a;
 }

@@ -21,22 +21,22 @@ export default function Home() {
         </p>
 
         <div className={styles.grid}>
-          <Link href="/puzzle/4">
+          <Link href="/puzzle?boardSize=4">
             <a className={styles.card}>
               <h3>4x4 Road Puzzles</h3>
             </a>
           </Link>
-          <Link href="/puzzle/5">
+          <Link href="/puzzle?boardSize=5">
             <a className={styles.card}>
               <h3>5x5 Road Puzzles</h3>
             </a>
           </Link>
-          <Link href="/puzzle/6">
+          <Link href="/puzzle?boardSize=6">
             <a className={styles.card}>
               <h3>6x6 Road Puzzles</h3>
             </a>
           </Link>
-          <Link href="/puzzle/7">
+          <Link href="/puzzle?boardSize=7">
             <a className={styles.card}>
               <h3>7x7 Road Puzzles</h3>
             </a>

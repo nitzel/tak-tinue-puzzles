@@ -2,10 +2,10 @@
 // better-sqlite3 on worker threats for slow queries: https://github.com/JoshuaWise/better-sqlite3/blob/master/docs/threads.md
 
 import { NextApiRequest, NextApiResponse } from "next";
-import { getLatestDatabase, loadLatestDatabase } from "../../../../helpers/api/db";
-import { IGame, GameResult } from "../../../../helpers/interfaces/db/games";
-import { generatePtnNinjaLink, playTakThemeString } from "../../../../helpers/ptnninja";
-import { createPtn } from "../../../../helpers/ptn";
+import { getLatestDatabase, loadLatestDatabase } from "../../helpers/api/db";
+import { IGame, GameResult } from "../../helpers/interfaces/db/games";
+import { generatePtnNinjaLink } from "../../helpers/ptnninja";
+import { createPtn } from "../../helpers/ptn";
 
 export type Result = {
   puzzleNotation: string
@@ -46,7 +46,7 @@ export default async (req: NextApiRequest, res: NextApiResponse<Result>) => {
   console.log(game.notation);
   console.log(ptn);
 
-  const ptnNinjaHref = generatePtnNinjaLink(ptn, moveCount - 1);
+  const ptnNinjaHref = generatePtnNinjaLink(ptn, moveCount);
   console.log(ptnNinjaHref);
 
   res.status(200).json({
