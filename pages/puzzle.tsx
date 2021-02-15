@@ -105,6 +105,13 @@ function Puzzle() {
 
   const { puzzleUrl } = data ?? {};
 
+  useEffect(() => {
+    if (data?.bad) {
+      console.log("Unsuitable puzzle, navigating to next one", data);
+      goToNextPuzzle();
+    }
+  });
+
   return (
     <div className={styles.container}>
       <Head>
