@@ -70,8 +70,6 @@ function Puzzle() {
   const router = useRouter();
   const boardSize = getValidBoardSize(router.query.boardSize as string);
   const puzzleId = parseInt(router.query.puzzleId as string, 10);
-  console.log(router);
-  console.log(router.query);
 
   const goToNextPuzzle = () => {
     if (!boardSize) return;

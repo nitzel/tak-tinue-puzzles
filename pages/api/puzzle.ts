@@ -25,7 +25,7 @@ export default async (req: NextApiRequest, res: NextApiResponse<Result>) => {
 
   const boardSize = parseInt(req.query.boardSize as string, 10);
   const puzzleId = parseInt(req.query.puzzleId as string, 10);
-  console.log(`GET puzzle random boardsize='${boardSize}'`);
+  console.log(`GET puzzle boardsize='${boardSize}' id=${puzzleId}`);
 
   const latestDbPath = getLatestDatabase();
   if (!latestDbPath) {
@@ -49,12 +49,7 @@ export default async (req: NextApiRequest, res: NextApiResponse<Result>) => {
   const [player_white, player_black] = game.result === GameResult.WhiteRoadWin ? ["You", "Them"] : ["Them", "You"];
   const { ptn, moveCount, finalMoves } = createPtn({ ...game, player_white, player_black }, 1);
 
-  console.log(game);
-  console.log(game.notation);
-  console.log(ptn);
-
   const ptnNinjaHref = generatePtnNinjaLink(ptn, moveCount);
-  console.log(ptnNinjaHref);
 
   res.status(200).json({
     puzzleNotation: ptn,

@@ -11,7 +11,6 @@ const Player: React.FunctionComponent = () => {
 
   const router = useRouter();
   const { name: playerName } = router.query;
-  console.log(router, router.query);
 
   const { data, error } = useSWR<Result>(`/api/playergames/${playerName}`, fetcher);
   if (error) return <div>Failed to load: {error}</div>
