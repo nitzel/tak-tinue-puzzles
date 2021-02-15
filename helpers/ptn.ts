@@ -24,10 +24,12 @@ export const createPtn = (game: IGame, removeNlastMoves = 0) => {
 
   const moves = ptnMovesFromServerNotation(game.notation);
   const usedMoves = moves.slice(0, moves.length - removeNlastMoves);
+  const finalMoves = moves.slice(moves.length - removeNlastMoves);
 
   const configString = Object.entries(config).map(([key, value]) => `[${key} "${value}"]`).join('');
   return {
     ptn: configString + " " + usedMoves.join(' '),
-    moveCount: usedMoves.length
+    moveCount: usedMoves.length,
+    finalMoves
   }
 }

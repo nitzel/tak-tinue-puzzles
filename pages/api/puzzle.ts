@@ -12,6 +12,11 @@ export type Result = {
   puzzleUrl: string
   puzzleId: number
   puzzleSize: number
+  solution: string[]
+  /**
+   * Indicates that this puzzle is unsuitable for some reason
+   */
+  bad?: boolean
 };
 
 const firstValidGameDate = 1461430858755;
@@ -41,7 +46,9 @@ export default async (req: NextApiRequest, res: NextApiResponse<Result>) => {
   const actualPuzzleId = puzzleId; //(puzzleId as unknown as number) % games.length;
 
   if (!game) throw new Error(`No game of size '${boardSize}' found`);
-  const { ptn, moveCount } = createPtn(game, 1);
+  const [player_white, player_black] = game.result === GameResult.WhiteRoadWin ? ["You", "Them"] : ["Them", "You"];
+  const { ptn, moveCount, finalMoves } = createPtn({ ...game, player_white, player_black }, 1);
+
   console.log(game);
   console.log(game.notation);
   console.log(ptn);
@@ -54,5 +61,8 @@ export default async (req: NextApiRequest, res: NextApiResponse<Result>) => {
     puzzleUrl: ptnNinjaHref,
     puzzleId: actualPuzzleId,
     puzzleSize: boardSize,
+    solution: finalMoves,
+    // X wins by Y making a move
+    bad: game.result === GameResult.WhiteRoadWin ? moveCount % 2 === 1 : moveCount % 2 === 0
   });
 }
