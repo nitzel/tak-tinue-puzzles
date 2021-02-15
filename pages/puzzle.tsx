@@ -5,7 +5,7 @@ import fetcher from '../helpers/ui/fetcher';
 import { Result } from './api/puzzle';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-import { HowItWorks } from '../components/howItWorks';
+import HowItWorks from '../components/howItWorks';
 import Link from 'next/link'
 
 const getValidBoardSize = (boardSize?: string): number | null => {

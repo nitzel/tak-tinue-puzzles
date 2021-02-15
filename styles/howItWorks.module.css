@@ -1,0 +1,21 @@
+.center {
+  text-align: center;
+}
+
+.trigger {
+  cursor: pointer;
+  user-select: none;
+}
+.trigger:hover {
+  text-decoration: underline;
+}
+
+.expanded {
+  composes: center;
+  overflow: hidden;
+}
+.collapsed {
+  composes: expanded;
+  visibility: hidden;
+  max-height: 0;
+}

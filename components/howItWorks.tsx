@@ -1,13 +1,52 @@
+import React from "react";
+import styles from "../styles/howItWorks.module.css";
+
 type Props = {
   movesToWin: number
   type: "road" | "flats"
   className?: string
 }
 
-export const HowItWorks: React.FunctionComponent<Props> = ({ movesToWin, type, className }) => {
-  return <div className={className}>
-    Check out the board state below. The name of the player you're playing for has a green bar below it.
-    Now it's your turn to find the {movesToWin === 1 ? 'single move' : `${movesToWin} moves`} to win.
-    That is accomplished by {type === "road" ? "building a road" : "ending the game on flats"}.
-  </div>;
+type State = {
+  collapsed: boolean
 }
+
+class HowItWorks extends React.PureComponent<Props, State> {
+
+  constructor(props: Props | Readonly<Props>) {
+    super(props);
+
+    this.state = {
+      collapsed: true
+    }
+  }
+
+  private toggle = () => {
+    this.setState(({ collapsed }) => ({ collapsed: !collapsed }));
+  }
+
+  public render = () => {
+    const { className, movesToWin, type } = this.props;
+    const { collapsed } = this.state;
+    const symbol = collapsed ? '+' : '-'
+    return (
+      <div className={className}>
+        <div className={styles.center}>
+          <span className={styles.trigger} onClick={this.toggle}>{symbol} How it works {symbol}</span>
+        </div>
+        <div className={collapsed ? styles.collapsed : styles.expanded}>
+          Check out the board state below.
+          The name of the player you're playing for has a green bar below it.
+          A {type} win is {movesToWin} {movesToWin === 1 ? 'move' : 'moves'} away.
+          It's up to you to find a a forcing win.
+          <p />
+          To reset the board position refresh the page.
+          <p />
+          When you want to move on to the next puzzle, hit the button below.
+        </div>
+      </div >
+    );
+  }
+}
+
+export default HowItWorks;
