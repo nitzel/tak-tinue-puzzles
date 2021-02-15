@@ -152,6 +152,11 @@
 .btn_positive:hover {
   background: #8bc34a;
 }
+.btn_positive:active {
+  border-color: 1px solid red;
+  background-color: #607d8b;
+  transition: none;
+}
 
 .puzzle_iframe {
   border-radius: 5px;
