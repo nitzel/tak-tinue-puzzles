@@ -1,10 +1,10 @@
 export enum GameResult {
   Unknown = "0-0",
-  BlackRoadWin = "R-0",
-  WhiteRoadWin = "0-R",
-  BlackFlatWin = "F-0",
-  WhiteFlatWin = "0-F",
+  WhiteRoadWin = "R-0",
+  WhiteFlatWin = "F-0",
   WhiteWin = "1-0",
+  BlackRoadWin = "0-R",
+  BlackFlatWin = "0-F",
   BlackWin = "0-1",
 }
 
