@@ -48,11 +48,16 @@ export default function Home() {
               <p>All the history</p>
             </a>
           </Link> */}
+
+          <p className={styles.description}>
+            This website is work in progress. If you experience problems or have suggestions,
+            please contact <code>nitzel#9159</code> on discord or <a className={styles.link} href="https://github.com/nitzel/tak-tinue-puzzles/issues">create an issue on github</a>
+          </p>
         </div>
       </main>
 
       <footer className={styles.footer}>
-        <a href="https://github.com/nitzel/tak-tinue-puzzles" target="_blank">
+        <a className={styles.link} href="https://github.com/nitzel/tak-tinue-puzzles" target="_blank">
           Source on GitHub
         </a>
       </footer>
