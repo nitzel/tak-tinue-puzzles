@@ -3,7 +3,7 @@
 
 import { NextApiRequest, NextApiResponse } from "next";
 import { getLatestDatabase, loadLatestDatabase } from "../../../helpers/api/db";
-import IGame from "../../../helpers/interfaces/db/games";
+import { IGame } from "../../../helpers/interfaces/db/games";
 
 export type Result = { games: IGame[] };
 

@@ -1,4 +1,4 @@
-import IGame from "../helpers/interfaces/db/games";
+import { IGame } from "../helpers/interfaces/db/games";
 
 type Props = {
   game: IGame;
