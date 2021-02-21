@@ -29,3 +29,19 @@ export interface IGame {
   rating_change_white: number
   rating_change_black: number
 }
+
+export interface ITinueRow {
+  id: number,
+  /** Foreign Key to IGame */
+  gameid: number,
+  size: number,
+  plies_to_undo: number,
+  tinue_depth: number,
+  /** Actually JSON representation of `string[]` where each string is a move */
+  tinue: string
+}
+
+/**
+ * Join of tables `games` and `tinues`
+ */
+export type ITinueGameRow = IGame & ITinueRow;

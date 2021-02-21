@@ -3,9 +3,10 @@
 
 import { NextApiRequest, NextApiResponse } from "next";
 import { getLatestDatabase, loadLatestDatabase } from "../../helpers/api/db";
-import { IGame, GameResult } from "../../helpers/interfaces/db/games";
+import { IGame, GameResult, ITinueGameRow } from "../../helpers/interfaces/db/games";
 import { generatePtnNinjaLink } from "../../helpers/ptnninja";
 import { createPtn } from "../../helpers/ptn";
+import { Database } from "better-sqlite3";
 
 export type Result = {
   puzzleNotation: string
@@ -21,11 +22,56 @@ export type Result = {
 
 const firstValidGameDate = 1461430858755;
 
+const getTinue1Game = (db: Database, boardSize: number, puzzleId: number): Result => {
+  const game = db.prepare("SELECT * FROM games WHERE (result = ? OR result = ?) and size = ? and date > ? ORDER BY id LIMIT 1 OFFSET ?")
+    .get(GameResult.WhiteRoadWin, GameResult.BlackRoadWin, boardSize, firstValidGameDate, puzzleId) as IGame;
+  db.close();
+
+  if (!game) throw new Error(`No game of size '${boardSize}' found`);
+  const [player_white, player_black] = game.result === GameResult.WhiteRoadWin ? ["You", "Them"] : ["Them", "You"];
+  const { ptn, plyCount: moveCount, finalMoves } = createPtn({ ...game, player_white, player_black }, 1);
+
+  const ptnNinjaHref = generatePtnNinjaLink(ptn, moveCount);
+
+  return {
+    puzzleId,
+    puzzleNotation: ptn,
+    puzzleUrl: ptnNinjaHref,
+    puzzleSize: boardSize,
+    solution: finalMoves,
+    // X wins by Y making a move
+    bad: game.result === GameResult.WhiteRoadWin ? moveCount % 2 === 1 : moveCount % 2 === 0
+  };
+}
+
+const getTinueGame = (db: Database, boardSize: number, puzzleId: number, tinueDepth: number): Result => {
+  const game = db.prepare("SELECT * FROM tinues t JOIN games g ON t.gameid = g.id WHERE t.size = ? and t.tinue_depth = ? ORDER BY t.id LIMIT 1 OFFSET ?")
+    .get(boardSize, tinueDepth, puzzleId) as ITinueGameRow;
+  db.close();
+
+  if (!game) throw new Error(`No game of size '${boardSize}' with a '${tinueDepth}'-ply Tinue found`);
+  const [player_white, player_black] = game.result === GameResult.WhiteRoadWin ? ["You", "Them"] : ["Them", "You"];
+  const { ptn, plyCount: moveCount } = createPtn({ ...game, player_white, player_black }, game.plies_to_undo);
+  const tinueMoves = JSON.parse(game.tinue)
+
+  const ptnNinjaHref = generatePtnNinjaLink(ptn, moveCount);
+
+  return {
+    puzzleId,
+    puzzleNotation: ptn,
+    puzzleUrl: ptnNinjaHref,
+    puzzleSize: boardSize,
+    solution: tinueMoves,
+    bad: false
+  };
+}
+
 export default async (req: NextApiRequest, res: NextApiResponse<Result>) => {
 
   const boardSize = parseInt(req.query.boardSize as string, 10);
   const puzzleId = parseInt(req.query.puzzleId as string, 10);
-  console.log(`GET puzzle boardsize='${boardSize}' id=${puzzleId}`);
+  const tinueDepth = parseInt(req.query.tinueDepth as string, 10) || 1;
+  console.log(`GET puzzle boardsize='${boardSize}' id=${puzzleId} tinueLength=${tinueDepth}`);
 
   const latestDbPath = getLatestDatabase();
   if (!latestDbPath) {
@@ -39,25 +85,8 @@ export default async (req: NextApiRequest, res: NextApiResponse<Result>) => {
     throw new Error("Failed to load db");
   }
 
-  const game = db.prepare("SELECT * FROM games WHERE (result = ? OR result = ?) and size = ? and date > ? ORDER BY id LIMIT 1 OFFSET ?")
-    .get(GameResult.WhiteRoadWin, GameResult.BlackRoadWin, boardSize, firstValidGameDate, puzzleId) as IGame;
-  db.close();
-
-  const actualPuzzleId = puzzleId; //(puzzleId as unknown as number) % games.length;
-
-  if (!game) throw new Error(`No game of size '${boardSize}' found`);
-  const [player_white, player_black] = game.result === GameResult.WhiteRoadWin ? ["You", "Them"] : ["Them", "You"];
-  const { ptn, moveCount, finalMoves } = createPtn({ ...game, player_white, player_black }, 1);
-
-  const ptnNinjaHref = generatePtnNinjaLink(ptn, moveCount);
-
-  res.status(200).json({
-    puzzleNotation: ptn,
-    puzzleUrl: ptnNinjaHref,
-    puzzleId: actualPuzzleId,
-    puzzleSize: boardSize,
-    solution: finalMoves,
-    // X wins by Y making a move
-    bad: game.result === GameResult.WhiteRoadWin ? moveCount % 2 === 1 : moveCount % 2 === 0
-  });
+  if (tinueDepth === 1) {
+    return res.status(200).json(getTinue1Game(db, boardSize, puzzleId));
+  }
+  return res.status(200).json(getTinueGame(db, boardSize, puzzleId, tinueDepth));
 }

@@ -18,26 +18,32 @@ const getValidBoardSize = (boardSize?: string): number | null => {
   return null;
 }
 
-const getLocalStorageKeyForPlayedPuzzles = (boardSize: number) => {
-  return `playedPuzzles${boardSize}`;
+const getLocalStorageKeyForPlayedPuzzles = (boardSize: number, tinueDepth: number) => {
+  if (tinueDepth === 1) {
+    return `playedPuzzles${boardSize}`;
+  }
+  return `playedPuzzles${boardSize}_depth${tinueDepth}`;
 }
 
-const savePuzzleAsCompleted = (boardSize: number, puzzleId: number) => {
-  if (!boardSize || !puzzleId) return;
+const savePuzzleAsCompleted = (boardSize: number, tinueDepth: number, puzzleId: number) => {
+  if (!boardSize || !tinueDepth || !puzzleId) return;
 
-  const key = getLocalStorageKeyForPlayedPuzzles(boardSize);
+  const key = getLocalStorageKeyForPlayedPuzzles(boardSize, tinueDepth);
+
   const playedGamesString = localStorage.getItem(key)
   const playedGames: number[] = playedGamesString ? JSON.parse(playedGamesString) : [];
   if (playedGames.includes(puzzleId)) return;
+
   playedGames.push(puzzleId);
   playedGames.sort((x, y) => x - y);
-  localStorage.setItem(getLocalStorageKeyForPlayedPuzzles(boardSize), JSON.stringify(playedGames));
+  localStorage.setItem(key, JSON.stringify(playedGames));
 }
 
-const getNextUnplayedPuzzle = (boardSize: number, currentPuzzleId?: number): number | null => {
-  if (!boardSize) return null;
+const getNextUnplayedPuzzle = (boardSize: number, tinueDepth: number, currentPuzzleId?: number): number | null => {
+  if (!boardSize || !tinueDepth) return null;
 
-  const key = getLocalStorageKeyForPlayedPuzzles(boardSize);
+  const key = getLocalStorageKeyForPlayedPuzzles(boardSize, tinueDepth);
+
   const playedGamesString = localStorage.getItem(key)
   const playedGames: number[] = playedGamesString ? JSON.parse(playedGamesString) : [];
 
@@ -70,11 +76,12 @@ function Puzzle() {
   const router = useRouter();
   const boardSize = getValidBoardSize(router.query.boardSize as string);
   const puzzleId = parseInt(router.query.puzzleId as string, 10);
+  const tinueDepth = parseInt(router.query.tinueDepth as string, 10) || 1;
 
   const goToNextPuzzle = () => {
     if (!boardSize) return;
-    savePuzzleAsCompleted(boardSize, puzzleId);
-    const nextId = getNextUnplayedPuzzle(boardSize, Number.isNaN(puzzleId) ? undefined : puzzleId);
+    savePuzzleAsCompleted(boardSize, tinueDepth, puzzleId);
+    const nextId = getNextUnplayedPuzzle(boardSize, tinueDepth, Number.isNaN(puzzleId) ? undefined : puzzleId);
     if (!nextId) {
       throw new Error(`Failed to get the next puzzle ID (BoardSize=${boardSize} CurrentPuzzleID=${puzzleId})`);
     }
@@ -82,6 +89,7 @@ function Puzzle() {
       {
         query: {
           boardSize,
+          tinueDepth,
           puzzleId: nextId
         }
       },
@@ -99,7 +107,7 @@ function Puzzle() {
     }
   });
 
-  const { data, error } = useSWR<Result>(boardSize && puzzleId ? `/api/puzzle?boardSize=${boardSize}&puzzleId=${puzzleId}` : null, fetcher);
+  const { data, error } = useSWR<Result>(boardSize && puzzleId ? `/api/puzzle?boardSize=${boardSize}&puzzleId=${puzzleId}&tinueDepth=${tinueDepth}` : null, fetcher);
 
   const { puzzleUrl } = data ?? {};
 
@@ -136,9 +144,9 @@ function Puzzle() {
                 {
                   error
                     ? <div style={{ color: "red" }}>
-                      An error has appeared while loading the puzzle {boardSize}#{puzzleId}:
+                      An error has appeared while loading the puzzle s{boardSize}t{tinueDepth}#{puzzleId}:
                       <br />
-                      <code>{error}</code>
+                      <code>{error.toString()}</code>
                     </div>
                     : <span>Loading the next puzzle...</span>
                 }
