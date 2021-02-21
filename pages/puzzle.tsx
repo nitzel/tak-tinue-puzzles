@@ -160,7 +160,7 @@ function Puzzle() {
               </div>
           }
         </div>
-        <button className={styles.btn_positive} onClick={goToNextPuzzle}>Next Puzzle</button>
+        <button disabled={error} className={styles.btn_positive} onClick={goToNextPuzzle}>Next Puzzle</button>
         <br />
         <PuzzleSolutionComponent solution={solution} className={styles.description_normal} />
       </main>

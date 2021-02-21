@@ -158,6 +158,13 @@
   background-color: #607d8b;
   transition: none;
 }
+.btn_positive[disabled] {
+  background-color: lightgray;
+  cursor: not-allowed;
+}
+.btn_positive[disabled]:hover {
+  background-color: lightgray;
+}
 
 .puzzle_iframe {
   border-radius: 5px;
