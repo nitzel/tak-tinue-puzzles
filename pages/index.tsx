@@ -51,7 +51,7 @@ const HomeComponent: React.FunctionComponent<Props> = (props) => {
         </h1>
 
         <p className={styles.description}>
-          Practice seeing roads and tinuës by selecting a board size
+          Practice seeing roads and tinuës by selecting a board size and length
         </p>
 
         <div className={styles.grid}>
@@ -83,7 +83,6 @@ const HomeComponent: React.FunctionComponent<Props> = (props) => {
             </div>
           </a>
 
-
           {/* <Link href="/player/nitzel">
             <a className={styles.card}>
               <h3>Played games &rarr;</h3>
@@ -104,6 +103,10 @@ const HomeComponent: React.FunctionComponent<Props> = (props) => {
       <footer className={styles.footer}>
         <a className={styles.link} href="https://github.com/nitzel/tak-tinue-puzzles" target="_blank">
           Source on GitHub
+        </a>
+        <br />
+        <a className={styles.link} href="https://ditaktic.blogspot.com/" target="_blank">
+          Puzzles too easy?
         </a>
       </footer>
     </div>
