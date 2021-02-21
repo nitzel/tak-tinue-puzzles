@@ -21,7 +21,7 @@ const PuzzleStats: React.FunctionComponent<PuzzleStatsProps> = ({ statistics, bo
               <a>
                 {
                   s.tinue_depth === 1
-                    ? `simple road puzzles (${s.count})`
+                    ? `Simple road puzzles (${s.count})`
                     : `${s.tinue_depth}-ply tinuë puzzles (${s.count})`
                 }
               </a>
@@ -91,7 +91,10 @@ const HomeComponent: React.FunctionComponent<Props> = (props) => {
             </a>
           </Link> */}
 
-          <p className={styles.description}>
+          <p className={styles.description_normal}>
+            Generating puzzles takes time (especially 5-ply), more will be added later.
+          </p>
+          <p className={styles.description_normal}>
             This website is work in progress. If you experience problems or have suggestions,
             please contact <code>nitzel#9159</code> on discord or <a className={styles.link} href="https://github.com/nitzel/tak-tinue-puzzles/issues">create an issue on github</a>
           </p>
