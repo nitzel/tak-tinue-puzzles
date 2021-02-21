@@ -42,7 +42,7 @@ class PuzzleSolutionComponent extends React.PureComponent<Props, State> {
         <div className={collapsed ? styles.collapsed : styles.expanded}>
           {
             solution?.length
-              ? solution.map(move => <span className={styles.move}>{move}</span>)
+              ? solution.map((move, i) => <span key={i} className={styles.move}>{move}</span>)
               : "No solution available"
           }
         </div>
