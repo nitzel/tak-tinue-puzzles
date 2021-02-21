@@ -8,7 +8,11 @@ import { generatePtnNinjaLink } from "../../helpers/ptnninja";
 import { createPtn } from "../../helpers/ptn";
 import { Database } from "better-sqlite3";
 
-export type Result = {
+export type ErrorResult = {
+  error: string
+}
+
+export type SuccessResult = {
   puzzleNotation: string
   puzzleUrl: string
   puzzleId: number
@@ -20,14 +24,16 @@ export type Result = {
   bad?: boolean
 };
 
+export type Result = ErrorResult | SuccessResult;
+
 const firstValidGameDate = 1461430858755;
 
-const getTinue1Game = (db: Database, boardSize: number, puzzleId: number): Result => {
+const getTinue1Game = (db: Database, boardSize: number, puzzleId: number): SuccessResult => {
   const game = db.prepare("SELECT * FROM games WHERE (result = ? OR result = ?) and size = ? and date > ? ORDER BY id LIMIT 1 OFFSET ?")
-    .get(GameResult.WhiteRoadWin, GameResult.BlackRoadWin, boardSize, firstValidGameDate, puzzleId) as IGame;
+    .get(GameResult.WhiteRoadWin, GameResult.BlackRoadWin, boardSize, firstValidGameDate, puzzleId - 1) as IGame;
   db.close();
 
-  if (!game) throw new Error(`No game of size '${boardSize}' found`);
+  if (!game) throw new Error(`No game of size '${boardSize}' found. You may have run out of new puzzles. Try a smaller puzzleId`);
   const [player_white, player_black] = game.result === GameResult.WhiteRoadWin ? ["You", "Them"] : ["Them", "You"];
   const { ptn, plyCount: moveCount, finalMoves } = createPtn({ ...game, player_white, player_black }, 1);
 
@@ -44,12 +50,12 @@ const getTinue1Game = (db: Database, boardSize: number, puzzleId: number): Resul
   };
 }
 
-const getTinueGame = (db: Database, boardSize: number, puzzleId: number, tinueDepth: number): Result => {
+const getTinueGame = (db: Database, boardSize: number, puzzleId: number, tinueDepth: number): SuccessResult => {
   const game = db.prepare("SELECT * FROM tinues t JOIN games g ON t.gameid = g.id WHERE t.size = ? and t.tinue_depth = ? ORDER BY t.id LIMIT 1 OFFSET ?")
-    .get(boardSize, tinueDepth, puzzleId) as ITinueGameRow;
+    .get(boardSize, tinueDepth, puzzleId - 1) as ITinueGameRow;
   db.close();
 
-  if (!game) throw new Error(`No game of size '${boardSize}' with a '${tinueDepth}'-ply Tinue found`);
+  if (!game) throw new Error(`No game of size '${boardSize}' with a '${tinueDepth}'-ply tinue found. You may have run out of new puzzles. Try a smaller puzzleId`);
   const [player_white, player_black] = game.result === GameResult.WhiteRoadWin ? ["You", "Them"] : ["Them", "You"];
   const { ptn, plyCount: moveCount } = createPtn({ ...game, player_white, player_black }, game.plies_to_undo);
   const tinueMoves = JSON.parse(game.tinue)
@@ -68,25 +74,33 @@ const getTinueGame = (db: Database, boardSize: number, puzzleId: number, tinueDe
 
 export default async (req: NextApiRequest, res: NextApiResponse<Result>) => {
 
-  const boardSize = parseInt(req.query.boardSize as string, 10);
-  const puzzleId = parseInt(req.query.puzzleId as string, 10);
-  const tinueDepth = parseInt(req.query.tinueDepth as string, 10) || 1;
-  console.log(`GET puzzle boardsize='${boardSize}' id=${puzzleId} tinueLength=${tinueDepth}`);
+  try {
+    const boardSize = parseInt(req.query.boardSize as string, 10);
+    const puzzleId = parseInt(req.query.puzzleId as string, 10);
+    const tinueDepth = parseInt(req.query.tinueDepth as string, 10) || 1;
+    console.log(`GET puzzle boardsize='${boardSize}' id=${puzzleId} tinueLength=${tinueDepth}`);
 
-  const latestDbPath = getLatestDatabase();
-  if (!latestDbPath) {
-    console.error("No DB found");
-    throw new Error("No DB found");
-  }
+    const latestDbPath = getLatestDatabase();
+    if (!latestDbPath) {
+      console.error("No DB found");
+      throw new Error("No DB found");
+    }
 
-  const db = loadLatestDatabase(latestDbPath);
-  if (typeof db === "string") {
-    console.error("Failed to load db", db, latestDbPath);
-    throw new Error("Failed to load db");
-  }
+    const db = loadLatestDatabase(latestDbPath);
+    if (typeof db === "string") {
+      console.error("Failed to load db", db, latestDbPath);
+      throw new Error("Failed to load db");
+    }
 
-  if (tinueDepth === 1) {
-    return res.status(200).json(getTinue1Game(db, boardSize, puzzleId));
+    if (tinueDepth === 1) {
+      return res.status(200).json(getTinue1Game(db, boardSize, puzzleId));
+    }
+    return res.status(200).json(getTinueGame(db, boardSize, puzzleId, tinueDepth));
   }
-  return res.status(200).json(getTinueGame(db, boardSize, puzzleId, tinueDepth));
+  catch (e) {
+    console.log("error", e);
+    if (e instanceof Error) {
+      return res.status(500).json({ error: e.message });
+    }
+  }
 }

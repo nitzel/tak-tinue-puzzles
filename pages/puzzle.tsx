@@ -2,12 +2,15 @@ import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import useSWR from 'swr';
 import fetcher from '../helpers/ui/fetcher';
-import { Result } from './api/puzzle';
+import { ErrorResult, Result, SuccessResult } from './api/puzzle';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import HowItWorks from '../components/howItWorks';
 import Link from 'next/link'
 import PuzzleSolutionComponent from '../components/puzzleSolution';
+
+const isErrorResult = (result?: Result): result is ErrorResult => (result as unknown as ErrorResult)?.error !== undefined;
+const isSuccessResult = (result?: Result): result is SuccessResult => !isErrorResult(result);
 
 const getValidBoardSize = (boardSize?: string): number | null => {
   if (!boardSize) return null;
@@ -109,12 +112,14 @@ function Puzzle() {
     }
   });
 
-  const { data, error } = useSWR<Result>(boardSize && puzzleId ? `/api/puzzle?boardSize=${boardSize}&puzzleId=${puzzleId}&tinueDepth=${tinueDepth}` : null, fetcher);
+  const { data: swrData, error: swrError } = useSWR<Result>(boardSize && puzzleId ? `/api/puzzle?boardSize=${boardSize}&puzzleId=${puzzleId}&tinueDepth=${tinueDepth}` : null, fetcher);
 
-  const { puzzleUrl, solution } = data ?? {};
+  const error = isErrorResult(swrData) ? swrData.error : swrError;
+  const data = isSuccessResult(swrData) ? swrData : undefined;
+  const { puzzleUrl, solution, bad: badPuzzle } = data ?? {};
 
   useEffect(() => {
-    if (data?.bad) {
+    if (badPuzzle) {
       console.log("Unsuitable puzzle, navigating to next one", data);
       goToNextPuzzle();
     }
