@@ -19,3 +19,9 @@
   visibility: hidden;
   max-height: 0;
 }
+
+.move {
+  font-family: monospace;
+  font-style: normal;
+  margin-left: 1em;
+}

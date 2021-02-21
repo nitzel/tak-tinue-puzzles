@@ -7,6 +7,7 @@ import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import HowItWorks from '../components/howItWorks';
 import Link from 'next/link'
+import PuzzleSolutionComponent from '../components/puzzleSolution';
 
 const getValidBoardSize = (boardSize?: string): number | null => {
   if (!boardSize) return null;
@@ -110,7 +111,7 @@ function Puzzle() {
 
   const { data, error } = useSWR<Result>(boardSize && puzzleId ? `/api/puzzle?boardSize=${boardSize}&puzzleId=${puzzleId}&tinueDepth=${tinueDepth}` : null, fetcher);
 
-  const { puzzleUrl } = data ?? {};
+  const { puzzleUrl, solution } = data ?? {};
 
   useEffect(() => {
     if (data?.bad) {
@@ -155,6 +156,8 @@ function Puzzle() {
           }
         </div>
         <button className={styles.btn_positive} onClick={goToNextPuzzle}>Next Puzzle</button>
+        <br />
+        <PuzzleSolutionComponent solution={solution} className={styles.description_normal} />
       </main>
     </div>
   );
