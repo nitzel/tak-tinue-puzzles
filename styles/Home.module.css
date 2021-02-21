@@ -70,7 +70,7 @@
   composes: description;
   font-size: revert;
   text-align: left;
-  width: 60%;
+  width: fit-content;
   font-style: italic;
 }
 
@@ -179,4 +179,10 @@
 
 .link:hover {
   text-decoration: underline;
+}
+
+.puzzleLinkBtn {
+  composes: btn;
+  width: fit-content;
+  margin-top: 0.5rem;
 }

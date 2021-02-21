@@ -63,12 +63,13 @@ const getNextUnplayedPuzzle = (boardSize: number, tinueDepth: number, currentPuz
 
 type TitleProps = {
   boardSize: number | null | undefined
+  tinueDepth: number | undefined
 }
 
-const Title: React.FunctionComponent<TitleProps> = ({ boardSize }) => {
+const Title: React.FunctionComponent<TitleProps> = ({ boardSize, tinueDepth: plies }) => {
   const boardSizeString = boardSize ? `${boardSize}x${boardSize}` : '?x?';
   return <h2 className={styles.title_normal}>
-    {boardSizeString} Puzzle
+    {plies ?? '?'}-ply {boardSizeString} Puzzle
   </h2>
 }
 
@@ -127,8 +128,8 @@ function Puzzle() {
 
       <main className={styles.main}>
         <Link href="/"><a className={styles.link}>&larr; Home</a></Link>
-        <Title boardSize={boardSize} />
-        <HowItWorks movesToWin={1} type="road" className={styles.description_normal} />
+        <Title boardSize={boardSize} tinueDepth={tinueDepth} />
+        <HowItWorks movesToWin={tinueDepth} type="road" className={styles.description_normal} />
         <div className={styles.grid} style={{ flexDirection: 'column' }}>
           {
             puzzleUrl

@@ -2,8 +2,42 @@ import Head from 'next/head'
 import React from 'react'
 import styles from '../styles/Home.module.css'
 import Link from 'next/link';
+import { getPuzzleStatistics, IPuzzleStatistics } from './api/puzzleStatistics';
+import { GetStaticProps } from 'next';
 
-export default function Home() {
+type PuzzleStatsProps = {
+  statistics: IPuzzleStatistics,
+  boardSize: number
+}
+const PuzzleStats: React.FunctionComponent<PuzzleStatsProps> = ({ statistics, boardSize }) => {
+  return <>
+    {
+      statistics.filter(s => s.size === boardSize)
+        .sort((s1, s2) => s1.tinue_depth - s2.tinue_depth)
+        .map(s =>
+          <div className={styles.puzzleLinkBtn} key={`${s.size}.${s.tinue_depth}`}>
+
+            <Link href={`/puzzle?boardSize=${s.size}&tinueDepth=${s.tinue_depth}`}>
+              <a>
+                {
+                  s.tinue_depth === 1
+                    ? `simple road puzzles (${s.count})`
+                    : `${s.tinue_depth}-ply tinuë puzzles (${s.count})`
+                }
+              </a>
+            </Link>
+          </div>
+        )
+    }
+  </>
+
+}
+
+type Props = {
+  statistics: IPuzzleStatistics
+}
+
+const HomeComponent: React.FunctionComponent<Props> = (props) => {
   return (
     <div className={styles.container}>
       <Head>
@@ -17,30 +51,38 @@ export default function Home() {
         </h1>
 
         <p className={styles.description}>
-          Practice seeing roads by selecting a board size
+          Practice seeing roads and tinuës by selecting a board size
         </p>
 
         <div className={styles.grid}>
-          <Link href="/puzzle?boardSize=4">
-            <a className={styles.card}>
-              <h3>4x4 Road Puzzles</h3>
-            </a>
-          </Link>
-          <Link href="/puzzle?boardSize=5">
-            <a className={styles.card}>
-              <h3>5x5 Road Puzzles</h3>
-            </a>
-          </Link>
-          <Link href="/puzzle?boardSize=6">
-            <a className={styles.card}>
-              <h3>6x6 Road Puzzles</h3>
-            </a>
-          </Link>
-          <Link href="/puzzle?boardSize=7">
-            <a className={styles.card}>
-              <h3>7x7 Road Puzzles</h3>
-            </a>
-          </Link>
+          <a className={styles.card}>
+            <h3>4x4 Road Puzzles</h3>
+            <div className={styles.description_normal}>
+              <PuzzleStats statistics={props.statistics} boardSize={4}></PuzzleStats>
+            </div>
+          </a>
+
+          <a className={styles.card}>
+            <h3>5x5 Road Puzzles</h3>
+            <div className={styles.description_normal}>
+              <PuzzleStats statistics={props.statistics} boardSize={5}></PuzzleStats>
+            </div>
+          </a>
+
+          <a className={styles.card}>
+            <h3>6x6 Road Puzzles</h3>
+            <div className={styles.description_normal}>
+              <PuzzleStats statistics={props.statistics} boardSize={6}></PuzzleStats>
+            </div>
+          </a>
+
+          <a className={styles.card}>
+            <h3>7x7 Road Puzzles</h3>
+            <div className={styles.description_normal}>
+              <PuzzleStats statistics={props.statistics} boardSize={7}></PuzzleStats>
+            </div>
+          </a>
+
 
           {/* <Link href="/player/nitzel">
             <a className={styles.card}>
@@ -63,4 +105,16 @@ export default function Home() {
       </footer>
     </div>
   )
+}
+
+export default HomeComponent;
+
+export const getStaticProps: GetStaticProps<Props> = async () => {
+  console.log("Calculating puzzle statistics");
+  return {
+    props: {
+      statistics: getPuzzleStatistics()
+    },
+    revalidate: 60 * 1 // Recalculate at max every 1 minutes as this is fairly costly
+  }
 }
