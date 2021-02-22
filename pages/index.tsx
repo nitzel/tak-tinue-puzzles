@@ -55,33 +55,33 @@ const HomeComponent: React.FunctionComponent<Props> = (props) => {
         </p>
 
         <div className={styles.grid}>
-          <a className={styles.card}>
+          <div className={styles.card}>
             <h3>4x4 Road Puzzles</h3>
             <div className={styles.description_normal}>
               <PuzzleStats statistics={props.statistics} boardSize={4}></PuzzleStats>
             </div>
-          </a>
+          </div>
 
-          <a className={styles.card}>
+          <div className={styles.card}>
             <h3>5x5 Road Puzzles</h3>
             <div className={styles.description_normal}>
               <PuzzleStats statistics={props.statistics} boardSize={5}></PuzzleStats>
             </div>
-          </a>
+          </div>
 
-          <a className={styles.card}>
+          <div className={styles.card}>
             <h3>6x6 Road Puzzles</h3>
             <div className={styles.description_normal}>
               <PuzzleStats statistics={props.statistics} boardSize={6}></PuzzleStats>
             </div>
-          </a>
+          </div>
 
-          <a className={styles.card}>
+          <div className={styles.card}>
             <h3>7x7 Road Puzzles</h3>
             <div className={styles.description_normal}>
               <PuzzleStats statistics={props.statistics} boardSize={7}></PuzzleStats>
             </div>
-          </a>
+          </div>
 
           {/* <Link href="/player/nitzel">
             <a className={styles.card}>
