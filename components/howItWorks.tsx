@@ -37,10 +37,12 @@ class HowItWorks extends React.PureComponent<Props, State> {
         <div className={collapsed ? styles.collapsed : styles.expanded}>
           Check out the board state below.
           The name of the player you're playing for has a green bar below it.
-          A {type} win is {movesToWin} {movesToWin === 1 ? 'move' : 'moves'} away.
-          It's up to you to find a a forcing win.
+          A {type} win is {movesToWin} {movesToWin === 1 ? 'ply' : 'plies'} away.
+          It is up to you to find a a forcing win.
           <p />
           To reset the board position refresh the page.
+          <p />
+          If you struggle, you can view one of the probably many solutions to the puzzle at the bottom of the page.
           <p />
           When you want to move on to the next puzzle, hit the button below.
         </div>
