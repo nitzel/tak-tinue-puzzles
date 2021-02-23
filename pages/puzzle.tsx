@@ -90,7 +90,7 @@ function Puzzle() {
     if (!nextId) {
       throw new Error(`Failed to get the next puzzle ID (BoardSize=${boardSize} CurrentPuzzleID=${puzzleId})`);
     }
-    router.replace(
+    (puzzleId ? router.push : router.replace)(
       {
         query: {
           boardSize,
@@ -105,7 +105,7 @@ function Puzzle() {
 
   useEffect(() => {
     if (router.isReady) {
-      if (!router.query.puzzleId || router.query.puzzleId === "latest") {
+      if (!router.query.puzzleId || router.query.puzzleId === "latest" || Number.isNaN(puzzleId)) {
         console.log(`puzzleId=${puzzleId}, going to the next puzzle`);
         goToNextPuzzle();
       }
@@ -142,6 +142,7 @@ function Puzzle() {
               ? <iframe
                 className={styles.puzzle_iframe}
                 src={puzzleUrl}
+                key={puzzleUrl}
                 width="100%"
                 height="100%"
                 frameBorder="0"
