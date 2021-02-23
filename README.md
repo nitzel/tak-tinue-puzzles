@@ -3,7 +3,7 @@ This will be a website where you can solve puzzles that are generated from games
 
 #### Goals
 1. [x] Practice spotting simple threats
-2. [ ] Practicing spotting tinues
+2. [x] Practicing spotting tinues
 3. [ ] Possibly practice avoiding tinues/threats
 
 # Setup
