@@ -6,3 +6,10 @@
 - [ ] Make it more fun to discover the Tinue
   - e.g. by rewarding the right move
   - by making the opponents move
+
+
+## My todo list
+- [ ] Figure out how to rebuild the deployment without stopping the server for half a minute while building
+- [ ] Add a 404 page
+- [ ] Improve styling - make it pretty
+- [ ] Once [ptn.ninja](https://ptn.ninja) supports [Window.postMessage](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) utilize it to apply moves, reset the board state etc
