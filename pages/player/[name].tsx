@@ -45,7 +45,7 @@ const Player: React.FunctionComponent = () => {
       </main>
 
       <footer className={styles.footer}>
-        <a href="https://github.com/nitzel" target="_blank">
+        <a href="https://github.com/nitzel" target="_blank" rel="noreferrer">
           Developed by nitzel
         </a>
       </footer>

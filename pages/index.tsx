@@ -101,11 +101,11 @@ const HomeComponent: React.FunctionComponent<Props> = (props) => {
       </main>
 
       <footer className={styles.footer}>
-        <a className={styles.link} href="https://github.com/nitzel/tak-tinue-puzzles" target="_blank">
+        <a className={styles.link} href="https://github.com/nitzel/tak-tinue-puzzles" target="_blank" rel="noreferrer">
           Source on GitHub
         </a>
         <br />
-        <a className={styles.link} href="https://ditaktic.blogspot.com/" target="_blank">
+        <a className={styles.link} href="https://ditaktic.blogspot.com/" target="_blank" rel="noreferrer">
           Puzzles too easy?
         </a>
       </footer>
