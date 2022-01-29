@@ -25,7 +25,7 @@ export const loadLatestDatabase = (databasePath: string, oldDb?: Database, reado
   console.log(`Switching to DB at '${databasePath}'`);
   try {
     return new Sqlite3(databasePath, { readonly, fileMustExist: true });
-  } catch (err) {
+  } catch (err: any) {
     console.error(err);
     return err.toString();
   }
