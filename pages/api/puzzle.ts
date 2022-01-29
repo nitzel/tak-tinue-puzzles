@@ -72,7 +72,7 @@ const getTinueGame = (db: Database, boardSize: number, puzzleId: number, tinueDe
   };
 }
 
-export default async (req: NextApiRequest, res: NextApiResponse<Result>) => {
+const getPuzzle = async (req: NextApiRequest, res: NextApiResponse<Result>) => {
 
   try {
     const boardSize = parseInt(req.query.boardSize as string, 10);
@@ -104,3 +104,5 @@ export default async (req: NextApiRequest, res: NextApiResponse<Result>) => {
     }
   }
 }
+
+export default getPuzzle;

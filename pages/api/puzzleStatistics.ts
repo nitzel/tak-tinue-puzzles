@@ -39,8 +39,10 @@ export const getPuzzleStatistics = (): IPuzzleStatistics => {
   ];
 }
 
-export default async (req: NextApiRequest, res: NextApiResponse<IResult>) => {
+const handleGetPuzzleStatisticsRequest = async (req: NextApiRequest, res: NextApiResponse<IResult>) => {
   console.log(`GET puzzle statistics`);
 
   return res.status(200).json({ statistics: getPuzzleStatistics() });
 }
+
+export default handleGetPuzzleStatisticsRequest;

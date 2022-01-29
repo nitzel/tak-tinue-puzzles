@@ -83,13 +83,6 @@ const HomeComponent: React.FunctionComponent<Props> = (props) => {
             </div>
           </div>
 
-          {/* <Link href="/player/nitzel">
-            <a className={styles.card}>
-              <h3>Played games &rarr;</h3>
-              <p>All the history</p>
-            </a>
-          </Link> */}
-
           <p className={styles.description_normal}>
             Generating puzzles takes time (especially 5-ply), more will be added later.
           </p>

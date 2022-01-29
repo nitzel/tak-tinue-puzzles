@@ -7,7 +7,7 @@ import { IGame } from "../../../helpers/interfaces/db/games";
 
 export type Result = { games: IGame[] };
 
-export default async (req: NextApiRequest, res: NextApiResponse<Result>) => {
+const getPlayerGames = async (req: NextApiRequest, res: NextApiResponse<Result>) => {
   if (req.method !== 'GET') {
     throw new Error("Only GET is supported");
   }
@@ -34,3 +34,5 @@ export default async (req: NextApiRequest, res: NextApiResponse<Result>) => {
     games,
   });
 }
+
+export default getPlayerGames;

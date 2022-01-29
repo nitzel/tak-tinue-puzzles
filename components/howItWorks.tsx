@@ -36,7 +36,7 @@ class HowItWorks extends React.PureComponent<Props, State> {
         </div>
         <div className={collapsed ? styles.collapsed : styles.expanded}>
           Check out the board state below.
-          The name of the player you're playing for has a green bar below it.
+          The name of the player you&apos;re playing for has a green bar below it.
           A {type} win is {movesToWin} {movesToWin === 1 ? 'ply' : 'plies'} away.
           It is up to you to find a a forcing win.
           <p />
