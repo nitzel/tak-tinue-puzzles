@@ -185,6 +185,18 @@
   justify-content: center;
 }
 
+/**
+ * It's impossible to scroll on small screens when the iframe takes up
+ * the entire screen. Be reducing max-height there's always some space
+ * to drag&scroll above or below the iframe.
+ * On wide screens this is not necessary, as there's enough space on the left/right.
+ */
+@media only screen and (max-height: 700px) and (max-width: 800px) {
+  .puzzle_iframe {
+    max-height: 80vh;
+  }
+}
+
 .link:hover {
   text-decoration: underline;
 }
