@@ -58,6 +58,9 @@ export const generatePtnNinjaLink = (ptn: string, ply: number, style?: string) =
     showRoads: false,
     showScrubber: false,
     theme: style,
+    showPTN: false,
+    showControls: true,
+    showText: false, // show comments
   }
   Object.entries(searchParams).forEach(([key, value]) => value != undefined && ptnNinjaUrl.searchParams.set(key, value.toString()));
   return ptnNinjaUrl.href.replace('?', '&'); //ptn.ninja expects no `?` before the arguments
