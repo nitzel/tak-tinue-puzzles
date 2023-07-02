@@ -37,7 +37,7 @@ class PuzzleSolutionComponent extends React.PureComponent<Props, State> {
     return (
       <div className={className}>
         <div className={styles.center}>
-          <span className={styles.trigger} onClick={this.toggle}>{symbol}One possible solution{symbol}</span>
+          <span className={styles.trigger} onClick={this.toggle}>{symbol}A possible solution{symbol}</span>
         </div>
         <div className={collapsed ? styles.collapsed : styles.expanded}>
           {
